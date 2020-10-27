@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1098778929495",
+    "firebase_url": "https://safestep-ea552.firebaseio.com",
+    "project_id": "safestep-ea552",
+    "storage_bucket": "safestep-ea552.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098778929495:android:78591448bd2bbcd0f8b612",
+        "android_client_info": {
+          "package_name": "com.equipo5.safestep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098778929495-vdj19825uv5kk692f1slcljmhl3m46cm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.equipo5.safestep",
+            "certificate_hash": "37adb8249df0fb1f6082b4dea9cc766ebfca8941"
+          }
+        },
+        {
+          "client_id": "1098778929495-8unc5b35uplganmdi86k67fdc2sefhcl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8Zn7XZfI2VIOIoB-7lnveDhj2E-zHeK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1098778929495-8unc5b35uplganmdi86k67fdc2sefhcl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
