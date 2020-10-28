@@ -13,5 +13,9 @@ class LoginActivity : AppCompatActivity() {
         btnGoToSignUp.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
+
+        btnGoToResetPassword.setOnClickListener{
+            startActivity(Intent( this, ResetPasswordActivity::class.java))
+        }
     }
 }
