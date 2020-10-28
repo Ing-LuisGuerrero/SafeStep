@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">SafeStep</string>
+    <string name="logo_description">Logo de SafeStep</string>
+    <string name="login_string">Iniciar sesión</string>
+    <string name="email_field">Correo electronico</string>
+    <string name="password_field">Contraseña</string>
+    <string name="reset_password">Olvide la contraseña</string>
+    <string name="signup_string">Registrarme</string>
+    <string name="sign_up_title">Registrarse</string>
+    <string name="full_name_field">Nombre completo</string>
+    <string name="verify_password">Verificar contraseña</string>
+    <string name="ask_have_account">¿Tienes una cuenta?</string>
+    <string name="login_imperative">Inicia sesión</string>
 </resources>
