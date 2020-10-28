@@ -20,20 +20,16 @@ class AuthProvider {
         }
     }
 
+    fun sendPasswordResetEmail(email: String): Task<Void> {
+        return auth.sendPasswordResetEmail(email)
+    }
+
     fun signUpWithEmailAndPassword(email: String, password: String): Task<AuthResult> {
         return auth.createUserWithEmailAndPassword(email, password)
     }
 
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
-    }
-
-    fun sendEmailVerification() {
-        auth.currentUser?.sendEmailVerification()
-    }
-
-    fun isEmailVerified(): Boolean? {
-        return auth.currentUser?.isEmailVerified
     }
 
     fun getUid(): String? {

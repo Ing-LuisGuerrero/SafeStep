@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,111 +7,131 @@
     tools:context=".activities.LoginActivity"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorAccent"
-        android:contentDescription="@string/logo_description" />
-
-    <TextView
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        android:text="@string/login_string"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/colorPrimaryDark"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tivEmailLogIn"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:layout_marginTop="16dp"
-        android:hint="@string/email_field"
-        app:errorEnabled="true"
-        android:layout_gravity="center_horizontal"
-        app:hintTextColor="@color/colorAccent"
-        app:boxStrokeColor="@color/colorAccent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etEmailLogIn"
-            android:layout_width="330dp"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:singleLine="true" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tivPasswordLogIn"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:layout_marginTop="16dp"
-        android:hint="@string/password_field"
-        app:errorEnabled="true"
-        android:layout_gravity="center_horizontal"
-        app:hintTextColor="@color/colorAccent"
-        app:boxStrokeColor="@color/colorAccent"
-        app:passwordToggleEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPasswordLogIn"
-            android:layout_width="330dp"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:singleLine="true" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSubmitLogin"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Button.BigButton.Primary"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/login_string" />
-
     <LinearLayout
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="56dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnGoToResetPassword"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/colorAccent"
+            android:contentDescription="@string/logo_description" />
+
+        <TextView
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Normalize"
-            android:text="@string/reset_password"
-            android:layout_gravity="center_horizontal"/>
+            android:text="@string/login_string"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorPrimaryDark"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tivEmailLogIn"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.Primary"
+            android:layout_marginTop="16dp"
+            android:hint="@string/email_field"
+            app:errorEnabled="true"
+            android:layout_gravity="center_horizontal">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmailLogIn"
+                android:layout_width="330dp"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tivPasswordLogIn"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.Primary"
+            android:layout_marginTop="16dp"
+            android:hint="@string/password_field"
+            app:errorEnabled="true"
+            android:layout_gravity="center_horizontal"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPasswordLogIn"
+                android:layout_width="330dp"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/btnGoToSignUp"
-            android:layout_width="wrap_content"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitLogin"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Normalize"
-            android:text="@string/sign_up_string"
-            android:textStyle="bold"
-            android:textColor="@color/colorAccent"
-            android:layout_gravity="center_horizontal" />
+            style="@style/Widget.MaterialComponents.Button.BigButton.Primary"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/login_string" />
+
+        <LinearLayout
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="56dp">
+
+            <Button
+                android:id="@+id/btnGoToResetPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Secondary"
+                android:text="@string/reset_password"
+                android:layout_gravity="center_horizontal"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/btnGoToSignUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Primary"
+                android:text="@string/sign_up_string"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/rlLoadingLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorSecondaryDark"
+            android:alpha="0.3"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
-</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

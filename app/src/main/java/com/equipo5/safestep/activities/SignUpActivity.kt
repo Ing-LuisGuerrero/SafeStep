@@ -2,6 +2,7 @@ package com.equipo5.safestep.activities
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
@@ -33,7 +34,7 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
         btnGotoLogin.setOnClickListener { finish() }
 
         btnSubmitSignUp.setOnClickListener {
-            if(isFormValid()) {
+            if (isFormValid()) {
                 signUp()
             }
         }
@@ -41,22 +42,31 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
 
     private fun signUp() {
 
+        rlLoadingSignUp.visibility = View.VISIBLE
+
         authProvider.signUpWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
 
-                authProvider.sendEmailVerification()
-                authProvider.getUid()?.let { insertUserInDatabase(it) }
+                val user = authProvider.getCurrentUser()
+
+                if (user != null) {
+                    user.sendEmailVerification()
+                    authProvider.getUid()?.let { insertUserInDatabase(it) }
+                }
 
             } else {
-
-                MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary)
-                .setTitle("Error")
-                .setMessage(task.exception?.message)
-                .setPositiveButton("Entendido") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setCancelable(false)
-                .show()
+                rlLoadingSignUp.visibility = View.INVISIBLE
+                MaterialAlertDialogBuilder(
+                    this,
+                    R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
+                )
+                    .setTitle("Error")
+                    .setMessage("La cuenta no pudo ser creada")
+                    .setPositiveButton("Entendido") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setCancelable(false)
+                    .show()
 
             }
         }
@@ -66,13 +76,17 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
         val user = User(fullName, email)
 
         try {
-            usersProvider.insert(id, user)!!.addOnCompleteListener {result ->
+            usersProvider.insert(id, user)!!.addOnCompleteListener { result ->
+
                 if (result.isSuccessful) {
 
-                    MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary)
+                    MaterialAlertDialogBuilder(
+                        this,
+                        R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
+                    )
                         .setTitle("Correo de verificacion enviado")
                         .setMessage("Una vez verifique su correo podra iniciar sesion. Si el correo no se encuentra revise su bandeja de correo no deseado.")
-                        .setPositiveButton("Entendido") { dialog, _ ->
+                        .setPositiveButton("Entendido") { _, _ ->
                             authProvider.logOut()
                             finish()
                         }
@@ -80,7 +94,10 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
                         .show()
 
                 } else {
-                    MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary)
+                    MaterialAlertDialogBuilder(
+                        this,
+                        R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
+                    )
                         .setTitle("Correo de verificacion enviado")
                         .setMessage("Una vez verifique su correo podra iniciar sesion para completar su registro. Si el correo no se encuentra revise su bandeja de correo no deseado.")
                         .setPositiveButton("Entendido") { _, _ ->
@@ -93,6 +110,8 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
             }
         } catch (e: Exception) {
             Log.e("Error", "Error inserting user in firebase: ", e)
+        } finally {
+            rlLoadingSignUp.visibility = View.INVISIBLE
         }
     }
 
@@ -105,11 +124,11 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
         password = etPasswordSignUp.text.toString()
         passwordConfirm = etConfirmPassword.text.toString()
 
-        if(fullName.isEmpty()) {
+        if (fullName.isEmpty()) {
             tivFullName.error = "El campo es obligatorio"
             tivFullName.isErrorEnabled = true
             isCorrect = false
-        } else if(fullName.length < 6) {
+        } else if (fullName.length < 6) {
             tivFullName.error = "Ingrese un nombre valido"
             tivFullName.isErrorEnabled = true
             isCorrect = false
@@ -117,7 +136,7 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
             tivFullName.isErrorEnabled = false
         }
 
-        if(email.isEmpty()) {
+        if (email.isEmpty()) {
             tivEmailSignUp.error = "El campo es obligatorio"
             tivEmailSignUp.isErrorEnabled = true
             isCorrect = false
@@ -129,11 +148,11 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
             tivEmailSignUp.isErrorEnabled = false
         }
 
-        if(password.isEmpty()) {
+        if (password.isEmpty()) {
             tivPasswordSignUp.error = "El campo es obligatorio"
             tivPasswordSignUp.isErrorEnabled = true
             isCorrect = false
-        } else if(password.length < 6) {
+        } else if (password.length < 6) {
             tivPasswordSignUp.error = "Debe contener al menos 6 caracteres"
             tivPasswordSignUp.isErrorEnabled = true
             isCorrect = false
@@ -141,11 +160,11 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
             tivPasswordSignUp.isErrorEnabled = false
         }
 
-        if(passwordConfirm.isEmpty()) {
+        if (passwordConfirm.isEmpty()) {
             tivConfirmPassword.error = "El campo es obligatorio"
             tivConfirmPassword.isErrorEnabled = true
             isCorrect = false
-        } else if(passwordConfirm != password) {
+        } else if (passwordConfirm != password) {
             tivConfirmPassword.error = "Las contraseñas no coinciden"
             tivConfirmPassword.isErrorEnabled = true
             isCorrect = false
@@ -153,7 +172,7 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
             tivConfirmPassword.isErrorEnabled = false
         }
 
-        if(!cbTermsAndConditions.isChecked) {
+        if (!cbTermsAndConditions.isChecked) {
             Toast.makeText(this, "Acepte los terminos y condiciones", Toast.LENGTH_LONG).show()
             isCorrect = false
         }
@@ -164,9 +183,10 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
     private fun setTermsAndConditionsString() {
         val textTarget = getString(R.string.string_target)
 
-        val text =  getString(R.string.terms_conditions)
+        val text = getString(R.string.terms_conditions)
 
-        val htmlText = "<b><font color=" + getColor(R.color.colorAccent) + ">" + textTarget + "</font></b>"
+        val htmlText =
+            "<b><font color=" + getColor(R.color.colorAccent) + ">" + textTarget + "</font></b>"
 
         val newText = text.replace(textTarget, htmlText)
 
