@@ -3,6 +3,7 @@ package com.equipo5.safestep.providers
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class AuthProvider {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -19,8 +20,20 @@ class AuthProvider {
         }
     }
 
-    fun signUp(email: String, password: String): Task<AuthResult> {
+    fun signUpWithEmailAndPassword(email: String, password: String): Task<AuthResult> {
         return auth.createUserWithEmailAndPassword(email, password)
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
+    }
+
+    fun sendEmailVerification() {
+        auth.currentUser?.sendEmailVerification()
+    }
+
+    fun isEmailVerified(): Boolean? {
+        return auth.currentUser?.isEmailVerified
     }
 
     fun getUid(): String? {
@@ -31,5 +44,5 @@ class AuthProvider {
         }
     }
 
-    fun signOut() = auth.signOut()
+    fun logOut() = auth.signOut()
 }

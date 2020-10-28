@@ -29,4 +29,8 @@
         <item name="textAllCaps">false</item>
         <item name="android:padding">0dp</item>
     </style>
+
+    <style name="ThemeOverlay.MaterialComponents.MaterialAlertDialog.Primary" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/colorAccent</item>
+    </style>
 </resources>
