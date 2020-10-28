@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeStep</string>
+    <string name="logo_description">Logo of SafeStep</string>
+    <string name="login_string">Log In</string>
+    <string name="email_field">Email</string>
+    <string name="password_field">Password</string>
+    <string name="reset_password">Forgotten password?</string>
+    <string name="sign_up_string">Sign Up</string>
+    <string name="sign_up_title">Sign Up</string>
+    <string name="full_name_field">Full name</string>
+    <string name="verify_password">Confirm password</string>
+    <string name="ask_have_account">Are you signed up?</string>
+    <string name="login_imperative">Log In</string>
+</resources>
