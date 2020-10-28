@@ -11,4 +11,6 @@
     <string name="verify_password">Confirmar contraseña</string>
     <string name="ask_have_account">¿Tienes una cuenta?</string>
     <string name="login_imperative">Inicia sesión</string>
+    <string name="string_target">Terminos, Condiciones</string>
+    <string name="terms_conditions">Acepto los Terminos, Condiciones y el aviso de privacidad.</string>
 </resources>

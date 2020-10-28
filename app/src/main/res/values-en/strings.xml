@@ -12,4 +12,6 @@
     <string name="verify_password">Confirm password</string>
     <string name="ask_have_account">Are you signed up?</string>
     <string name="login_imperative">Log In</string>
+    <string name="string_target">Terms, Conditions</string>
+    <string name="terms_conditions">Accept Terms, Conditions and notice of privacy.</string>
 </resources>
