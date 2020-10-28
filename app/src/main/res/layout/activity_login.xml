@@ -26,6 +26,7 @@
         android:textColor="@color/colorPrimaryDark"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tivEmailLogIn"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -37,6 +38,7 @@
         app:boxStrokeColor="@color/colorAccent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmailLogIn"
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
@@ -45,6 +47,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tivPasswordLogIn"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -57,6 +60,7 @@
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPasswordLogIn"
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
