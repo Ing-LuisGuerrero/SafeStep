@@ -49,32 +49,32 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
 
                 if(user != null) {
                     if(user.isEmailVerified) {
-                        Toast.makeText(this, "Email verificado", Toast.LENGTH_LONG).show()
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
                     } else {
                         MaterialAlertDialogBuilder(
                             this,
                             R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
                         )
-                            .setTitle("Email no verificado")
-                            .setMessage("¿Desea mandar un nuevo correo de verificacion?")
-                            .setPositiveButton("Enviar") { dialog, _ ->
+                            .setTitle(getString(R.string.no_verified_email))
+                            .setMessage(getString(R.string.ask_send_new_email))
+                            .setPositiveButton(R.string.send) { dialog, _ ->
 
                                 user.sendEmailVerification()
                                 dialog.dismiss()
-                                Toast.makeText(this, "El email ha sido enviado", Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, getString(R.string.email_sent), Toast.LENGTH_LONG).show()
                             }
-                            .setNegativeButton("Cancelar") {dialog, _ ->
+                            .setNegativeButton(getString(R.string.cancel)) {dialog, _ ->
 
                                 dialog.dismiss()
                             }
                             .setCancelable(false)
                             .show()
                     }
-                    authProvider.logOut()
                 }
 
             } else {
-                Toast.makeText(this, "Credenciales no validas", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -86,12 +86,12 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
         password = etPasswordLogIn.text.toString().trim()
 
         if (email.isEmpty()) {
-            tivEmailLogIn.error = "El campo es obligatorio"
+            tivEmailLogIn.error = getString(R.string.required_field)
             tivEmailLogIn.isErrorEnabled = true
             isCorrect = false
 
         } else if (!super.isEmailValid(email)) {
-            tivEmailLogIn.error = "Email invalido"
+            tivEmailLogIn.error = getString(R.string.invalid_email)
             tivEmailLogIn.isErrorEnabled = true
             isCorrect = false
         } else {
@@ -99,7 +99,7 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
         }
 
         if (password.isEmpty()) {
-            tivPasswordLogIn.error = "El campo es obligatorio"
+            tivPasswordLogIn.error = getString(R.string.required_field)
             tivPasswordLogIn.isErrorEnabled = true
             isCorrect = false
         } else {

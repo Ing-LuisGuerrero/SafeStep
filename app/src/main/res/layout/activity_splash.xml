@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".activities.SplashActivity"
-    android:orientation="vertical">
+    tools:ignore="UseCompoundDrawables"
+    android:id="@+id/llSplashScreen">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:src="@mipmap/logo"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp"
+        android:contentDescription="@string/logo_description" />
 
     <TextView
         android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="@string/app_name_br"
         android:textSize="40sp"
-        android:layout_gravity="center"
-        android:textStyle="italic"/>
+        android:textStyle="italic"
+        android:layout_marginBottom="100dp"/>
 
-
-
-
-</FrameLayout>
+</LinearLayout>

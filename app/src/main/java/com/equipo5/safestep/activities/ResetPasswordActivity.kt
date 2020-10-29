@@ -1,10 +1,9 @@
 package com.equipo5.safestep.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.core.content.res.ResourcesCompat
+import androidx.appcompat.app.AppCompatActivity
 import com.equipo5.safestep.R
 import com.equipo5.safestep.ValidateEmail
 import com.equipo5.safestep.providers.AuthProvider
@@ -13,13 +12,13 @@ import kotlinx.android.synthetic.main.activity_reset_password.*
 
 class ResetPasswordActivity : AppCompatActivity(), ValidateEmail {
 
-    lateinit var email: String
+    private lateinit var email: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
 
-        btnSubmitRestablecer.setOnClickListener() {
+        btnSubmitRestablecer.setOnClickListener {
             if (validateEmail()) {
                 sendEmail()
             }
@@ -32,16 +31,16 @@ class ResetPasswordActivity : AppCompatActivity(), ValidateEmail {
             if(it.isSuccessful) {
                 dialogOnSuccessful()
             } else {
-                Toast.makeText(this, "Hubo un error en la operación", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.error_operation), Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun dialogOnSuccessful() {
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary)
-            .setTitle("Confirmacion")
-            .setMessage("El email ha sido enviado")
-            .setPositiveButton("Entendido") { dialogInterface, _ ->
+            .setTitle(getString(R.string.confirmation))
+            .setMessage(getString(R.string.email_sent))
+            .setPositiveButton(getString(R.string.got_it)) { dialogInterface, _ ->
                 dialogInterface.dismiss()
                 startActivity(
                     Intent(this, LoginActivity::class.java)
@@ -57,12 +56,12 @@ class ResetPasswordActivity : AppCompatActivity(), ValidateEmail {
         email = etEmailResetPassword.text.toString().trim()
 
         if (email.isEmpty()) {
-            tivEmailResetPassword.error = "El campo es obligatorio"
+            tivEmailResetPassword.error = getString(R.string.required_field)
             tivEmailResetPassword.isErrorEnabled = true
             isCorrect = false
 
         } else if (!super.isEmailValid(email)) {
-            tivEmailResetPassword.error = "Email invalido"
+            tivEmailResetPassword.error = getString(R.string.invalid_email)
             tivEmailResetPassword.isErrorEnabled = true
             isCorrect = false
         } else {

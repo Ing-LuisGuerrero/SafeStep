@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="230dp"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/colorAccent"
+            android:src="@mipmap/logo"
+            android:paddingTop="40dp"
+            android:paddingBottom="40dp"
             android:contentDescription="@string/logo_description" />
 
         <TextView

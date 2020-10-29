@@ -60,9 +60,9 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
                     this,
                     R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
                 )
-                    .setTitle("Error")
-                    .setMessage("La cuenta no pudo ser creada")
-                    .setPositiveButton("Entendido") { dialog, _ ->
+                    .setTitle(getString(R.string.error))
+                    .setMessage(getString(R.string.sign_up_failed))
+                    .setPositiveButton(getString(R.string.got_it)) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .setCancelable(false)
@@ -84,9 +84,9 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
                         this,
                         R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
                     )
-                        .setTitle("Correo de verificacion enviado")
-                        .setMessage("Una vez verifique su correo podra iniciar sesion. Si el correo no se encuentra revise su bandeja de correo no deseado.")
-                        .setPositiveButton("Entendido") { _, _ ->
+                        .setTitle(getString(R.string.email_sent))
+                        .setMessage(getString(R.string.instructions_verify_email))
+                        .setPositiveButton(getString(R.string.got_it)) { _, _ ->
                             authProvider.logOut()
                             finish()
                         }
@@ -98,9 +98,9 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
                         this,
                         R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
                     )
-                        .setTitle("Correo de verificacion enviado")
-                        .setMessage("Una vez verifique su correo podra iniciar sesion para completar su registro. Si el correo no se encuentra revise su bandeja de correo no deseado.")
-                        .setPositiveButton("Entendido") { _, _ ->
+                        .setTitle(getString(R.string.email_sent))
+                        .setMessage(getString(R.string.instructions_verify_email))
+                        .setPositiveButton(getString(R.string.got_it)) { _, _ ->
                             authProvider.logOut()
                             finish()
                         }
@@ -124,56 +124,73 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
         password = etPasswordSignUp.text.toString()
         passwordConfirm = etConfirmPassword.text.toString()
 
-        if (fullName.isEmpty()) {
-            tivFullName.error = "El campo es obligatorio"
-            tivFullName.isErrorEnabled = true
-            isCorrect = false
-        } else if (fullName.length < 6) {
-            tivFullName.error = "Ingrese un nombre valido"
-            tivFullName.isErrorEnabled = true
-            isCorrect = false
-        } else {
-            tivFullName.isErrorEnabled = false
+        when {
+            fullName.isEmpty() -> {
+                tivFullName.error = getString(R.string.required_field)
+                tivFullName.isErrorEnabled = true
+                isCorrect = false
+            }
+            fullName.length < 6 -> {
+                tivFullName.error = getString(R.string.invalid_name)
+                tivFullName.isErrorEnabled = true
+                isCorrect = false
+            }
+            else -> {
+                tivFullName.isErrorEnabled = false
+            }
         }
 
-        if (email.isEmpty()) {
-            tivEmailSignUp.error = "El campo es obligatorio"
-            tivEmailSignUp.isErrorEnabled = true
-            isCorrect = false
-        } else if (!super.isEmailValid(email)) {
-            tivEmailSignUp.error = "Email invalido"
-            tivEmailSignUp.isErrorEnabled = true
-            isCorrect = false
-        } else {
-            tivEmailSignUp.isErrorEnabled = false
+        when {
+            email.isEmpty() -> {
+                tivEmailSignUp.error = getString(R.string.required_field)
+                tivEmailSignUp.isErrorEnabled = true
+                isCorrect = false
+            }
+            !super.isEmailValid(email) -> {
+                tivEmailSignUp.error = getString(R.string.invalid_email)
+                tivEmailSignUp.isErrorEnabled = true
+                isCorrect = false
+            }
+            else -> {
+                tivEmailSignUp.isErrorEnabled = false
+            }
         }
 
-        if (password.isEmpty()) {
-            tivPasswordSignUp.error = "El campo es obligatorio"
-            tivPasswordSignUp.isErrorEnabled = true
-            isCorrect = false
-        } else if (password.length < 6) {
-            tivPasswordSignUp.error = "Debe contener al menos 6 caracteres"
-            tivPasswordSignUp.isErrorEnabled = true
-            isCorrect = false
-        } else {
-            tivPasswordSignUp.isErrorEnabled = false
+        when {
+            password.isEmpty() -> {
+                tivPasswordSignUp.error = getString(R.string.required_field)
+                tivPasswordSignUp.isErrorEnabled = true
+                isCorrect = false
+            }
+            password.length < 6 -> {
+                tivPasswordSignUp.error = getString(R.string.password_length)
+                tivPasswordSignUp.isErrorEnabled = true
+                isCorrect = false
+            }
+            else -> {
+                tivPasswordSignUp.isErrorEnabled = false
+            }
         }
 
-        if (passwordConfirm.isEmpty()) {
-            tivConfirmPassword.error = "El campo es obligatorio"
-            tivConfirmPassword.isErrorEnabled = true
-            isCorrect = false
-        } else if (passwordConfirm != password) {
-            tivConfirmPassword.error = "Las contraseñas no coinciden"
-            tivConfirmPassword.isErrorEnabled = true
-            isCorrect = false
-        } else {
-            tivConfirmPassword.isErrorEnabled = false
+        when {
+            passwordConfirm.isEmpty() -> {
+                tivConfirmPassword.error = getString(R.string.required_field)
+                tivConfirmPassword.isErrorEnabled = true
+                isCorrect = false
+            }
+            passwordConfirm != password -> {
+                tivConfirmPassword.error = getString(R.string.passwords_not_match)
+                tivConfirmPassword.isErrorEnabled = true
+                isCorrect = false
+            }
+            else -> {
+                tivConfirmPassword.isErrorEnabled = false
+            }
         }
 
         if (!cbTermsAndConditions.isChecked) {
-            Toast.makeText(this, "Acepte los terminos y condiciones", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.accept_terms_conditions), Toast.LENGTH_LONG)
+                .show()
             isCorrect = false
         }
 

@@ -19,7 +19,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         val animation = AnimationUtils.loadAnimation(this, R.anim.animation_splash)
-        tvAppName.startAnimation(animation)
+        llSplashScreen.startAnimation(animation)
 
         animation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(p0: Animation?) {
@@ -30,11 +30,11 @@ class SplashActivity : AppCompatActivity() {
                 val user = authProvider.getCurrentUser()
 
                 if(user != null) {
-                    Toast.makeText(this@SplashActivity, "Redireccionando", Toast.LENGTH_LONG).show()
+                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                 } else {
                     startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                    finish()
                 }
+                finish()
             }
 
             override fun onAnimationRepeat(p0: Animation?) {
