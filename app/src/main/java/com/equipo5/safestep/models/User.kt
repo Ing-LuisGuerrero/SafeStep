@@ -1,3 +1,9 @@
 package com.equipo5.safestep.models
 
-data class User(val name: String, val email: String)
+import java.io.Serializable
+
+class User():Serializable {
+
+    lateinit var name: String
+    lateinit var email: String
+}

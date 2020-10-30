@@ -9,11 +9,14 @@ import androidx.core.text.HtmlCompat
 import com.equipo5.safestep.R
 import com.equipo5.safestep.ValidateEmail
 import com.equipo5.safestep.models.User
-import com.equipo5.safestep.providers.AuthProvider
+import com.equipo5.safestep.network.AuthService
+import com.equipo5.safestep.network.Callback
+import com.equipo5.safestep.network.FirestoreService
 import com.equipo5.safestep.providers.UsersProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.android.synthetic.main.activity_signup.*
-import kotlin.Exception
 
 class SignUpActivity : AppCompatActivity(), ValidateEmail {
 
@@ -21,9 +24,8 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
     private lateinit var email: String
     private lateinit var password: String
     private lateinit var passwordConfirm: String
-    private val authProvider = AuthProvider()
-    private val usersProvider = UsersProvider()
-
+    private val authService = AuthService()
+    private val firestoreService = FirestoreService()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,22 +46,21 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
 
         rlLoadingSignUp.visibility = View.VISIBLE
 
-        authProvider.signUpWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+        authService.signUpWithEmailAndPassword(email, password, object: Callback<AuthResult>{
 
-                val user = authProvider.getCurrentUser()
+            override fun onSuccess(result: AuthResult?) {
+                val user = authService.getCurrentUser()
+
+                Log.d("ENTRE", "Entramos a onSuccessSignUp")
 
                 if (user != null) {
-                    user.sendEmailVerification()
-                    authProvider.getUid()?.let { insertUserInDatabase(it) }
+                    insertUserInDatabase(user.uid)
                 }
+            }
 
-            } else {
+            override fun onFailure(exception: Exception) {
                 rlLoadingSignUp.visibility = View.INVISIBLE
-                MaterialAlertDialogBuilder(
-                    this,
-                    R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
-                )
+                MaterialAlertDialogBuilder(this@SignUpActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary)
                     .setTitle(getString(R.string.error))
                     .setMessage(getString(R.string.sign_up_failed))
                     .setPositiveButton(getString(R.string.got_it)) { dialog, _ ->
@@ -67,52 +68,53 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
                     }
                     .setCancelable(false)
                     .show()
-
             }
-        }
+
+        })
     }
 
     private fun insertUserInDatabase(id: String) {
-        val user = User(fullName, email)
 
-        try {
-            usersProvider.insert(id, user)!!.addOnCompleteListener { result ->
+        val userData = User()
 
-                if (result.isSuccessful) {
+        userData.name = fullName
+        userData.email = email
 
-                    MaterialAlertDialogBuilder(
-                        this,
-                        R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
-                    )
-                        .setTitle(getString(R.string.email_sent))
-                        .setMessage(getString(R.string.instructions_verify_email))
-                        .setPositiveButton(getString(R.string.got_it)) { _, _ ->
-                            authProvider.logOut()
-                            finish()
-                        }
-                        .setCancelable(false)
-                        .show()
+        val user = Pair(id, userData)
+        Log.d("name", user.second.name)
+        firestoreService.insertUser(user, object: Callback<Void>{
+            override fun onSuccess(result: Void?) {
+                Log.d("Firestore", "Information has been saved.")
+                authService.sendEmailVerification(object: Callback<Void>{
+                    override fun onSuccess(result: Void?) {
+                        authService.logOut()
+                        rlLoadingSignUp.visibility = View.INVISIBLE
+                        MaterialAlertDialogBuilder(this@SignUpActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary)
+                            .setTitle(getString(R.string.email_sent))
+                            .setMessage(getString(R.string.instructions_verify_email))
+                            .setPositiveButton(getString(R.string.got_it)) { _, _ ->
+                                finish()
+                            }
+                            .setCancelable(false)
+                            .show()
+                    }
 
-                } else {
-                    MaterialAlertDialogBuilder(
-                        this,
-                        R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
-                    )
-                        .setTitle(getString(R.string.email_sent))
-                        .setMessage(getString(R.string.instructions_verify_email))
-                        .setPositiveButton(getString(R.string.got_it)) { _, _ ->
-                            authProvider.logOut()
-                            finish()
-                        }
-                        .setCancelable(false)
-                        .show()
-                }
+                    override fun onFailure(exception: Exception) {
+                        authService.logOut()
+                        rlLoadingSignUp.visibility = View.INVISIBLE
+                        Log.d("AuthError", exception.message.toString())
+                    }
+                })
             }
-        } catch (e: Exception) {
-            Log.e("Error", "Error inserting user in firebase: ", e)
-        } finally {
-            rlLoadingSignUp.visibility = View.INVISIBLE
-        }
+
+            override fun onFailure(exception: Exception) {
+                authService.logOut()
+                rlLoadingSignUp.visibility = View.INVISIBLE
+                Log.d("FirestoreError", exception.message.toString())
+                finish()
+            }
+        })
+
     }
 
 
@@ -146,7 +148,7 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
                 tivEmailSignUp.isErrorEnabled = true
                 isCorrect = false
             }
-            !super.isEmailValid(email) -> {
+            !isEmailValid(email) -> {
                 tivEmailSignUp.error = getString(R.string.invalid_email)
                 tivEmailSignUp.isErrorEnabled = true
                 isCorrect = false
