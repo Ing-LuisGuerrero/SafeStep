@@ -10,9 +10,7 @@ import com.equipo5.safestep.R
 import com.equipo5.safestep.ValidateEmail
 import com.equipo5.safestep.providers.AuthProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlin.math.log
 
@@ -56,6 +54,7 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     } else {
+                        authProvider.logOut()
                         MaterialAlertDialogBuilder(
                             this,
                             R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
@@ -69,7 +68,6 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
                                 Toast.makeText(this, getString(R.string.email_sent), Toast.LENGTH_LONG).show()
                             }
                             .setNegativeButton(getString(R.string.cancel)) {dialog, _ ->
-
                                 dialog.dismiss()
                             }
                             .setCancelable(false)
@@ -80,6 +78,8 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
             } else {
                 try {
                     throw it.exception!!
+                } catch (e: FirebaseAuthInvalidUserException) {
+                    Toast.makeText(this, getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show()
                 } catch (e: FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(this, getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show()
                 } catch (e: Exception){

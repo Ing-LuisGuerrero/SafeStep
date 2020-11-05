@@ -39,4 +39,6 @@
     <string name="app_name_br">Safe\nStep</string>
     <string name="reset_password_title">Restablecer Contraseña</string>
     <string name="send_email">Enviar Correo</string>
+    <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoiaW5nZ3VlcnJlcm8iLCJhIjoiY2toM251bTV2MTBxNDJ5cngybHo5eHRseCJ9.ckhpgcLjhsjuPePLq4Y9vQ</string>
+    <string name="search_field">Buscar</string>
 </resources>
