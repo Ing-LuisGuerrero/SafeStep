@@ -12,10 +12,8 @@ import com.equipo5.safestep.models.User
 import com.equipo5.safestep.network.AuthService
 import com.equipo5.safestep.network.Callback
 import com.equipo5.safestep.network.FirestoreService
-import com.equipo5.safestep.providers.UsersProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignUpActivity : AppCompatActivity(), ValidateEmail {

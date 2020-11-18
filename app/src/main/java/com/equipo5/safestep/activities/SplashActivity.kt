@@ -5,14 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import com.equipo5.safestep.R
-import com.equipo5.safestep.providers.AuthProvider
+import com.equipo5.safestep.network.AuthService
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
 
-    val authProvider = AuthProvider()
+    val authService = AuthService()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
 
             override fun onAnimationEnd(p0: Animation?) {
 
-                val user = authProvider.getCurrentUser()
+                val user = authService.getCurrentUser()
 
                 if(user != null) {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))

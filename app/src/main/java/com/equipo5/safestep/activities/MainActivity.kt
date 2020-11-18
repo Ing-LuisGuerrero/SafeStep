@@ -16,7 +16,6 @@ import com.equipo5.safestep.models.User
 import com.equipo5.safestep.network.AuthService
 import com.equipo5.safestep.network.Callback
 import com.equipo5.safestep.network.FirestoreService
-import com.equipo5.safestep.providers.AuthProvider
 import com.google.android.material.navigation.NavigationView
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -59,7 +58,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-
         setSupportActionBar(toolbar)
 
         nav_view.bringToFront()
@@ -72,7 +70,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
 
         nav_view.setCheckedItem(R.id.nav_reports)
         nav_view.setNavigationItemSelectedListener(this)
@@ -136,6 +133,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(Style.TRAFFIC_DAY
         ) { style -> enableLocationComponent(style); }
+
+        mapboxMap.addOnMapLongClickListener { point ->
+            Toast.makeText(this, String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show()
+
+            true
+        }
+
     }
 
     /**

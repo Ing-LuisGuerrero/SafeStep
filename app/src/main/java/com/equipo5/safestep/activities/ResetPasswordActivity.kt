@@ -6,13 +6,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.equipo5.safestep.R
 import com.equipo5.safestep.ValidateEmail
-import com.equipo5.safestep.providers.AuthProvider
+import com.equipo5.safestep.network.AuthService
+import com.equipo5.safestep.network.Callback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_reset_password.*
 
 class ResetPasswordActivity : AppCompatActivity(), ValidateEmail {
 
     private lateinit var email: String
+    private val authService = AuthService()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,14 +28,18 @@ class ResetPasswordActivity : AppCompatActivity(), ValidateEmail {
     }
 
     private fun sendEmail() {
-        val authProvider = AuthProvider()
-        authProvider.sendPasswordResetEmail(email).addOnCompleteListener {
-            if(it.isSuccessful) {
+
+        authService.sendPasswordResetEmail(email, object: Callback<Void> {
+            override fun onSuccess(result: Void?) {
                 dialogOnSuccessful()
-            } else {
-                Toast.makeText(this, getString(R.string.error_operation), Toast.LENGTH_LONG).show()
             }
-        }
+
+            override fun onFailure(exception: Exception) {
+                Toast.makeText(this@ResetPasswordActivity, getString(R.string.error_operation), Toast.LENGTH_LONG).show()
+            }
+
+        })
+
     }
 
     private fun dialogOnSuccessful() {

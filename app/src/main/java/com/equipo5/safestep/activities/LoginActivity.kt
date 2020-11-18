@@ -8,17 +8,17 @@ import android.view.View
 import android.widget.Toast
 import com.equipo5.safestep.R
 import com.equipo5.safestep.ValidateEmail
-import com.equipo5.safestep.providers.AuthProvider
+import com.equipo5.safestep.network.AuthService
+import com.equipo5.safestep.network.Callback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlin.math.log
 
 class LoginActivity : AppCompatActivity(), ValidateEmail {
 
-    val authProvider = AuthProvider()
     lateinit var email: String
     lateinit var password: String
+    private val authService = AuthService()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,20 +43,19 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
     private fun logIn() {
         rlLoadingLogIn.visibility = View.VISIBLE
 
-        authProvider.logInWithEmailAndPassword(email, password).addOnCompleteListener {
-            rlLoadingLogIn.visibility = View.INVISIBLE
-
-            if(it.isSuccessful) {
-                val user = authProvider.getCurrentUser()
+        authService.logInWithEmailAndPassword(email, password, object: Callback<AuthResult> {
+            override fun onSuccess(result: AuthResult?) {
+                rlLoadingLogIn.visibility = View.INVISIBLE
+                val user = authService.getCurrentUser()
 
                 if(user != null) {
                     if(user.isEmailVerified) {
-                        startActivity(Intent(this, MainActivity::class.java))
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
                     } else {
-                        authProvider.logOut()
+                        authService.logOut()
                         MaterialAlertDialogBuilder(
-                            this,
+                            this@LoginActivity,
                             R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Primary
                         )
                             .setTitle(getString(R.string.no_verified_email))
@@ -65,7 +64,7 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
 
                                 user.sendEmailVerification()
                                 dialog.dismiss()
-                                Toast.makeText(this, getString(R.string.email_sent), Toast.LENGTH_LONG).show()
+                                Toast.makeText(this@LoginActivity, getString(R.string.email_sent), Toast.LENGTH_LONG).show()
                             }
                             .setNegativeButton(getString(R.string.cancel)) {dialog, _ ->
                                 dialog.dismiss()
@@ -74,20 +73,24 @@ class LoginActivity : AppCompatActivity(), ValidateEmail {
                             .show()
                     }
                 }
+            }
 
-            } else {
+            override fun onFailure(exception: Exception) {
+                rlLoadingLogIn.visibility = View.INVISIBLE
                 try {
-                    throw it.exception!!
+                    throw exception
                 } catch (e: FirebaseAuthInvalidUserException) {
-                    Toast.makeText(this, getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@LoginActivity, getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show()
                 } catch (e: FirebaseAuthInvalidCredentialsException) {
-                    Toast.makeText(this, getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@LoginActivity, getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show()
                 } catch (e: Exception){
-                    Toast.makeText(this, getString(R.string.error_operation), Toast.LENGTH_LONG).show()
-                    Log.e("Error", "Error generico")
+                    Toast.makeText(this@LoginActivity, getString(R.string.error_operation), Toast.LENGTH_LONG).show()
+                    Log.e("Error", exception.message.toString())
                 }
             }
-        }
+
+        })
+
     }
 
     private fun validateLogIn(): Boolean {
