@@ -41,4 +41,9 @@
     <string name="reset_password_title">Reset Password</string>
     <string name="send_email">Send email</string>
     <string name="search_field">Search</string>
+    <string name="crime_register_title">Register crime</string>
+    <string name="crimeTitle">Titulo</string>
+    <string name="what_happened">¿Que sucedio?</string>
+    <string name="what_was_the_crime">¿Cual fue el crimen?</string>
+
 </resources>

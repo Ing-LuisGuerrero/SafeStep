@@ -41,6 +41,8 @@
     <string name="send_email">Enviar Correo</string>
     <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoiaW5nZ3VlcnJlcm8iLCJhIjoiY2toM251bTV2MTBxNDJ5cngybHo5eHRseCJ9.ckhpgcLjhsjuPePLq4Y9vQ</string>
     <string name="search_field">Buscar</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" tools:ignore="MissingTranslation">Hello blank fragment</string>
+    <string name="crime_register_title">Reportar crimen</string>
+    <string name="crimeTitle">Titulo</string>
+    <string name="what_happened">¿Que sucedio?</string>
+    <string name="what_was_the_crime">¿Cual fue el crimen?</string>
 </resources>

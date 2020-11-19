@@ -1,6 +1,8 @@
 package com.equipo5.safestep.network
 
+import com.equipo5.safestep.models.Crime
 import com.equipo5.safestep.models.User
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 
 const val USERS_COLLECTION_NAME = "Users"
@@ -28,5 +30,17 @@ class FirestoreService {
             .addOnSuccessListener { callback.onSuccess(it) }
             .addOnFailureListener { exception -> callback.onFailure(exception)  }
     }
+
+    fun insertCrimeRegister(crime: Crime, callback: Callback<Task<Void>>) {
+        db.collection("Crimes").document().set(crime)
+            .addOnCompleteListener {
+                callback.onSuccess(it)
+            }
+            .addOnFailureListener { exception ->
+                callback.onFailure(exception)
+            }
+    }
+
+
 
 }

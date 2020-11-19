@@ -11,6 +11,9 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.equipo5.safestep.fragments.CrimeFormFragment
 import com.equipo5.safestep.R
 import com.equipo5.safestep.models.User
 import com.equipo5.safestep.network.AuthService
@@ -133,13 +136,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(Style.TRAFFIC_DAY
         ) { style -> enableLocationComponent(style); }
-
         mapboxMap.addOnMapLongClickListener { point ->
             Toast.makeText(this, String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show()
-
+            openCrimeForm(point.latitude.toString(), point.longitude.toString())
             true
         }
 
+    }
+
+    private fun openCrimeForm(latitude: String, longitude: String) {
+        val fragment: Fragment = CrimeFormFragment()
+
+        val bundle = Bundle()
+
+        bundle.putString("latitude", latitude)
+        bundle.putString("longitude", longitude)
+
+        fragment.arguments = bundle
+
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment).addToBackStack("main")
+        transaction.commit()
     }
 
     /**
