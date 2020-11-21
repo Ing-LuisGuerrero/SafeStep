@@ -136,8 +136,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(Style.TRAFFIC_DAY
         ) { style -> enableLocationComponent(style); }
+
         mapboxMap.addOnMapLongClickListener { point ->
-            Toast.makeText(this, String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show()
             openCrimeForm(point.latitude.toString(), point.longitude.toString())
             true
         }

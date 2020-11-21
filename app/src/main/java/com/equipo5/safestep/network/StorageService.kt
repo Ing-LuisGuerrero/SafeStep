@@ -11,9 +11,9 @@ class StorageService() {
     private var storage = FirebaseStorage.getInstance().reference
 
 
-    fun saveImage(context: Context, file: File, callback: Callback<Void>) {
+    fun saveImage(context: Context, uId: String, file: File, callback: Callback<Void>) {
         val imageByte = CompressorBitmapImage.getImage(context, file.path, 500, 500)
-        val store = storage.child(("${Date()}.jpg"))
+        val store = FirebaseStorage.getInstance().reference.child(("images/$uId/${Date()}.jpg"))
         store.putBytes(imageByte)
             .addOnSuccessListener {
                 storage = store

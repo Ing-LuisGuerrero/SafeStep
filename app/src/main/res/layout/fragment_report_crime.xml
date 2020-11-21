@@ -81,7 +81,6 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.Primary"
                         android:layout_marginTop="16dp"
                         android:hint="@string/crimeTitle"
-                        app:errorEnabled="true"
                         android:layout_gravity="center_horizontal">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -99,6 +98,7 @@
                         android:id="@+id/tilCrime"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="330dp"
+                        android:layout_marginTop="16dp"
                         android:layout_height="wrap_content"
                         android:hint="@string/what_was_the_crime">
 
