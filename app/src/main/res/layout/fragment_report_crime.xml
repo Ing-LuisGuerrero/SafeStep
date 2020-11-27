@@ -126,7 +126,8 @@
                             android:imeOptions="actionNext"
                             android:inputType="text"
                             android:shadowColor="@color/colorPrimaryDark"
-                            android:singleLine="true" />
+                            android:singleLine="true"
+                            android:focusable="false"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 

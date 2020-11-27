@@ -31,8 +31,11 @@ import com.google.type.DateTime
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_report_crime.*
 import java.io.File
+import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.min
+import kotlin.time.measureTimedValue
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -69,18 +72,14 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     private val options = arrayOf<CharSequence>("Imagen de galeria", "Tomar foto")
     private lateinit var mPhotoPath: String
     private lateinit var mAbsolutePhotoPath: String
+    private var dateString = ""
+    private lateinit var date: Date
 
     var day = 0
     var month = 0
     var year = 0
     var hour = 0
     var minute = 0
-
-    var savedDay = 0
-    var savedMonth = 0
-    var savedYear = 0
-    var savedHour = 0
-    var savedMinute = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,7 +150,9 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
         getDateTimeCalendar()
 
-        tilDatePicker.setOnClickListener {
+        etDatePicker.isLongClickable = false
+
+        etDatePicker.setOnClickListener {
             context?.let { context -> DatePickerDialog(context, this, year, month, day).show() }
         }
 
@@ -312,7 +313,8 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         crimeRegister.description = description
         crimeRegister.category = crime
         crimeRegister.idUser = uId
-        crimeRegister.datetime = Timestamp(Date())
+        crimeRegister.whenWasReported = Timestamp(Date())
+        crimeRegister.whenItHappened = Timestamp(date)
         crimeRegister.longitude = longitude.toString()
         crimeRegister.latitude = latitude.toString()
 
@@ -348,8 +350,8 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         var isCorrect = true
 
         title = etCrimeTitle.text.toString().trim()
-        description = etCrimeDescription.text.toString().trim()
         crime = filled_exposed_dropdown.text.toString()
+        description = etCrimeDescription.text.toString().trim()
 
         when {
             title.isEmpty() -> {
@@ -380,6 +382,17 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             }
             else -> {
                 tilCrimeDescription.isErrorEnabled = false
+            }
+        }
+
+        when {
+            dateString.isEmpty() -> {
+                tilDatePicker.error = getString(R.string.required_field)
+                tilDatePicker.isErrorEnabled = true
+                isCorrect = false
+            }
+            else -> {
+                tilDatePicker.isErrorEnabled = false
             }
         }
 
@@ -429,31 +442,32 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         year = cal.get(Calendar.YEAR)
         hour = cal.get(Calendar.HOUR)
         minute = cal.get(Calendar.MINUTE)
-
     }
 
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        savedDay = dayOfMonth
-        savedMonth = month
-        savedYear = year
+        day = dayOfMonth
+        this.month = month
+        this.year = year
 
-        getDateTimeCalendar()
-        TimePickerDialog(context, this, hour, minute, true).show()
+        TimePickerDialog(context, this, hour, minute, false).show()
     }
 
     @SuppressLint("SimpleDateFormat")
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-        savedHour = hourOfDay
-        savedMinute = minute
+        hour = hourOfDay
+        this.minute = minute
+
         val date = Calendar.getInstance()
-        date.set(savedYear + 1900, savedMonth, savedDay, savedHour, savedMinute)
 
-        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm a")
+        date.set(year, month, day, hour, this.minute, 0)
 
-        val dateF = Date(date.timeInMillis)
+        this.date = date.time
 
+        val patron = "%02d/%02d/%04d %02d:%02d"
+        dateString = String.format(patron, day, month+1, year, hour, minute)
 
+        etDatePicker.setText(dateString)
 
     }
 }

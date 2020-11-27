@@ -14,6 +14,7 @@ class Report: Serializable {
     lateinit var idUser: String
     lateinit var latitude: String
     lateinit var longitude: String
-    lateinit var datetime: Timestamp
+    lateinit var whenWasReported: Timestamp
+    lateinit var whenItHappened: Timestamp
     val isValidated = false
 }
