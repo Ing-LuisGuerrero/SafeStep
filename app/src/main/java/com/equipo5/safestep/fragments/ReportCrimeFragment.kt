@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.FileProvider
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.equipo5.safestep.R
 import com.equipo5.safestep.models.Report
@@ -32,6 +33,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_report_crime.*
 import java.io.File
 import java.sql.Time
+import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.min
@@ -64,22 +66,23 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     lateinit var crime: String
     private var imageFile = mutableListOf<Pair<Int, File>>()
     private val authService = AuthService()
-    val storage = StorageService()
-    val firestoreService = FirestoreService()
+    private val storage = StorageService()
+    private val firestoreService = FirestoreService()
     private var uri = mutableListOf<Pair<Int, String>>()
     private val uId = authService.getUid()
     private lateinit var alertDialog: AlertDialog.Builder
     private val options = arrayOf<CharSequence>("Imagen de galeria", "Tomar foto")
+    private val optionsDelete = arrayOf<CharSequence>("Imagen de galeria", "Tomar foto", "Eliminar")
     private lateinit var mPhotoPath: String
     private lateinit var mAbsolutePhotoPath: String
     private var dateString = ""
     private lateinit var date: Date
 
-    var day = 0
-    var month = 0
-    var year = 0
-    var hour = 0
-    var minute = 0
+    private var day = 0
+    private var month = 0
+    private var year = 0
+    private var hour = 0
+    private var minute = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,15 +167,49 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     }
 
     private fun selectOption(requestCodeGallery: Int, requestCodePhoto: Int) {
+
+        var options = this.options
+
+        for (j in 0 until imageFile.size) {
+            if(imageFile[j].first == requestCodeGallery) {
+                options = optionsDelete
+                break
+            }
+        }
+
         alertDialog.setItems(options) { _, which ->
             if (which == 0) {
                 openGallery(requestCodeGallery)
-            } else {
+            } else if(which == 1) {
                 takePhoto(requestCodePhoto)
+            } else {
+                deleteImage(requestCodeGallery)
             }
         }
 
         alertDialog.show()
+    }
+
+    private fun deleteImage(positionInUI: Int) {
+
+        for (i in 0 until imageFile.size) {
+            if(imageFile[i].first == positionInUI) {
+                imageFile.removeAt(i)
+                break
+            }
+        }
+
+        when (positionInUI) {
+            1 -> {
+                ivMainImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_image_24, null))
+            }
+            2 -> {
+                ivSecondImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_image_24, null))
+            }
+            3 -> {
+                ivThirdImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_image_24, null))
+            }
+        }
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -313,7 +350,7 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         crimeRegister.description = description
         crimeRegister.category = crime
         crimeRegister.idUser = uId
-        crimeRegister.whenWasReported = Timestamp(Date())
+        crimeRegister.whenWasItReported = Timestamp(Date())
         crimeRegister.whenItHappened = Timestamp(date)
         crimeRegister.longitude = longitude.toString()
         crimeRegister.latitude = latitude.toString()
@@ -453,7 +490,6 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         TimePickerDialog(context, this, hour, minute, false).show()
     }
 
-    @SuppressLint("SimpleDateFormat")
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         hour = hourOfDay
         this.minute = minute
