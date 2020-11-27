@@ -45,5 +45,6 @@
     <string name="crimeTitle">Titulo</string>
     <string name="what_happened">¿Que sucedio?</string>
     <string name="what_was_the_crime">¿Cual fue el crimen?</string>
+    <string name="whenItHappened">¿Cuando sucedió?</string>
 
 </resources>
