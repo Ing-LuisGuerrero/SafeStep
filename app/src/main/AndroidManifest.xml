@@ -2,10 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.equipo5.safestep">
 
-    <uses-feature android:name="android.hardware.camera2" android:required="false" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -14,10 +19,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.ReportDetailedActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.ReportsActivity" />
 
         <provider
-            android:authorities="com.equipo5.safestep"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.equipo5.safestep"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -25,7 +36,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".activities.MainActivity"/>
+        <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".activities.ResetPasswordActivity"
             android:configChanges="orientation"

@@ -5,6 +5,9 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -16,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -27,17 +31,22 @@ import com.equipo5.safestep.network.FirestoreService
 import com.equipo5.safestep.network.StorageService
 import com.equipo5.safestep.utils.FileUtil
 import com.google.android.gms.tasks.Task
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
-import com.google.type.DateTime
+import com.mapbox.api.geocoding.v5.GeocodingCriteria
+import com.mapbox.api.geocoding.v5.MapboxGeocoding
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse
+import com.mapbox.core.exceptions.ServicesException
+import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_report_crime.*
+import retrofit2.Call
+import retrofit2.Response
+import timber.log.Timber
 import java.io.File
-import java.sql.Time
-import java.text.FieldPosition
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
-import kotlin.time.measureTimedValue
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,9 +67,9 @@ private const val CAMERA_REQUEST_CODE_3 = 6
  */
 class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     // TODO: Rename and change types of parameters
-    private var latitude: String? = null
-    private var longitude: String? = null
-
+    private var latitude: Double? = null
+    private var longitude: Double? = null
+    lateinit var cal: Calendar
     lateinit var title: String
     lateinit var description: String
     lateinit var crime: String
@@ -77,6 +86,8 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     private lateinit var mAbsolutePhotoPath: String
     private var dateString = ""
     private lateinit var date: Date
+    var timeInMillis_1: Long = 0
+    var timeInMillis_2: Long = 0
 
     private var day = 0
     private var month = 0
@@ -88,8 +99,8 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            latitude = it.getString(ARG_PARAM1)
-            longitude = it.getString(ARG_PARAM2)
+            latitude = it.getDouble(ARG_PARAM1)
+            longitude = it.getDouble(ARG_PARAM2)
         }
     }
 
@@ -97,7 +108,7 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        container?.removeAllViews()
 
         val view = inflater.inflate(R.layout.fragment_report_crime, container, false)
 
@@ -132,8 +143,12 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        longitude?.let { Log.d("LONGITUDE", it) }
-        latitude?.let { Log.d("LATITUDE", it) }
+        (activity as AppCompatActivity?)!!.setSupportActionBar(toolbarRegisterFragment)
+        (activity as AppCompatActivity?)!!.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity?)!!.supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        longitude?.let { Log.d("LONGITUDE", it.toString()) }
+        latitude?.let { Log.d("LATITUDE", it.toString()) }
 
         ivMainImage.setOnClickListener {
             selectOption(GALLERY_REQUEST_CODE, CAMERA_REQUEST_CODE)
@@ -156,7 +171,12 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         etDatePicker.isLongClickable = false
 
         etDatePicker.setOnClickListener {
-            context?.let { context -> DatePickerDialog(context, this, year, month, day).show() }
+            context?.let { context ->
+                val datepicker = DatePickerDialog(context, this, year, month, day)
+                datepicker.datePicker.minDate = cal.timeInMillis - 604800000
+                datepicker.datePicker.maxDate = cal.timeInMillis
+                datepicker.show()
+            }
         }
 
         btnSubmitCrime.setOnClickListener {
@@ -201,13 +221,31 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
         when (positionInUI) {
             1 -> {
-                ivMainImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_image_24, null))
+                ivMainImage.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_baseline_image_24,
+                        null
+                    )
+                )
             }
             2 -> {
-                ivSecondImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_image_24, null))
+                ivSecondImage.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_baseline_image_24,
+                        null
+                    )
+                )
             }
             3 -> {
-                ivThirdImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_image_24, null))
+                ivThirdImage.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_baseline_image_24,
+                        null
+                    )
+                )
             }
         }
     }
@@ -228,7 +266,11 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             if (photoFile != null) {
                 var photoUri: Uri? = null
                 try {
-                    photoUri = FileProvider.getUriForFile(context!!, "com.equipo5.safestep", photoFile)
+                    photoUri = FileProvider.getUriForFile(
+                        context!!,
+                        "com.equipo5.safestep",
+                        photoFile
+                    )
                 } catch (ex: Exception){
                     Toast.makeText(context, "Error en la operación", Toast.LENGTH_LONG).show()
                     Log.e("Error context", ex.message.toString())
@@ -354,33 +396,95 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         crimeRegister.whenItHappened = Timestamp(date)
         crimeRegister.longitude = longitude.toString()
         crimeRegister.latitude = latitude.toString()
+        crimeRegister.isValidated = false
 
         return crimeRegister
     }
 
     private fun insertCrimeRegister(crimeRegister: Report) {
-        firestoreService.insertCrimeRegister(
-            crimeRegister,
-            object : Callback<Task<Void>> {
-                override fun onSuccess(result: Task<Void>?) {
-                    rlLoadingCrimeRegister.visibility =
-                        View.INVISIBLE
-                    Toast.makeText(
-                        context,
-                        "Registrado",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    fragmentManager?.beginTransaction()
-                        ?.remove(this@CrimeFormFragment)
-                        ?.commit()
-                }
 
-                override fun onFailure(exception: Exception) {
-                    rlLoadingCrimeRegister.visibility =
-                        View.INVISIBLE
-                }
+        if(longitude != null && latitude != null) {
 
-            })
+            try {
+                val latLng = LatLng(latitude!!, longitude!!)
+
+                // Build a Mapbox geocoding request
+                val client: MapboxGeocoding = MapboxGeocoding.builder()
+                    .accessToken(getString(R.string.mapbox_access_token))
+                    .query(latLng.let { Point.fromLngLat(it.longitude, latLng.latitude) })
+                    .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
+                    .mode(GeocodingCriteria.MODE_PLACES)
+                    .build()
+                client.enqueueCall(object : retrofit2.Callback<GeocodingResponse> {
+                    override fun onResponse(
+                        call: Call<GeocodingResponse>,
+                        response: Response<GeocodingResponse>
+                    ) {
+                        if (response.body() != null) {
+                            val results = response.body()!!.features()
+                            if (results.size > 0) {
+
+                                // Get the first Feature from the successful geocoding response
+                                val feature = results[0]
+                                //geocodeResultTextView.setText(feature.toString())
+                                //animateCameraToNewPosition(latLng)
+                                crimeRegister.city = feature.context()!![1].text()
+
+                                if(feature.address() != null) {
+                                    crimeRegister.fullAddress = feature.text() + " " + feature.address().toString()
+                                } else {
+                                    crimeRegister.fullAddress = feature.text()
+                                }
+
+                                crimeRegister.postCode = feature.context()!![0].text()
+                                crimeRegister.country = feature.context()!![3].text()
+                                crimeRegister.state = feature.context()!![2].text()
+
+                                firestoreService.insertCrimeRegister(
+                                    crimeRegister,
+                                    object : Callback<Task<Void>> {
+                                        override fun onSuccess(result: Task<Void>?) {
+                                            rlLoadingCrimeRegister.visibility =
+                                                View.INVISIBLE
+                                            Toast.makeText(
+                                                context,
+                                                "Registrado",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                            fragmentManager?.beginTransaction()
+                                                ?.remove(this@CrimeFormFragment)
+                                                ?.commit()
+                                        }
+
+                                        override fun onFailure(exception: Exception) {
+                                            rlLoadingCrimeRegister.visibility =
+                                                View.INVISIBLE
+                                        }
+
+                                    })
+
+                            } else {
+                                Toast.makeText(
+                                    context, "Sin resultados",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GeocodingResponse>, t: Throwable) {
+                        Timber.e("Geocoding Failure: ${t.message}");
+                    }
+
+
+                })
+            } catch (servicesException: ServicesException) {
+                Timber.e("Error geocoding: $servicesException")
+                servicesException.printStackTrace()
+            }
+
+        }
+
     }
 
     private fun isFormValid(): Boolean {
@@ -425,6 +529,11 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         when {
             dateString.isEmpty() -> {
                 tilDatePicker.error = getString(R.string.required_field)
+                tilDatePicker.isErrorEnabled = true
+                isCorrect = false
+            }
+            timeInMillis_1 < timeInMillis_2 -> {
+                tilDatePicker.error = "Aun no se llega este dia y hora"
                 tilDatePicker.isErrorEnabled = true
                 isCorrect = false
             }
@@ -473,7 +582,8 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     }
 
     private fun getDateTimeCalendar() {
-        val cal = Calendar.getInstance()
+        cal = Calendar.getInstance()
+        timeInMillis_1 = cal.timeInMillis
         day = cal.get(Calendar.DAY_OF_MONTH)
         month = cal.get(Calendar.MONTH)
         year = cal.get(Calendar.YEAR)
@@ -498,10 +608,12 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
         date.set(year, month, day, hour, this.minute, 0)
 
+        timeInMillis_2 = date.timeInMillis
+
         this.date = date.time
 
         val patron = "%02d/%02d/%04d %02d:%02d"
-        dateString = String.format(patron, day, month+1, year, hour, minute)
+        dateString = String.format(patron, day, month + 1, year, hour, minute)
 
         etDatePicker.setText(dateString)
 

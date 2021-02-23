@@ -46,5 +46,8 @@
     <string name="what_happened">¿Que sucedio?</string>
     <string name="what_was_the_crime">¿Cual fue el crimen?</string>
     <string name="whenItHappened">¿Cuando sucedió?</string>
+    <string name="map">Mapa</string>
+    <string name="last_reports_title">Ultimos reportes</string>
+    <string name="my_reports_title">Mis reportes</string>
 
 </resources>

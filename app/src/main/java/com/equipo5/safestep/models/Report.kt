@@ -16,5 +16,11 @@ class Report: Serializable {
     lateinit var longitude: String
     lateinit var whenWasItReported: Timestamp
     lateinit var whenItHappened: Timestamp
-    val isValidated = false
+    var isValidated: Boolean? = null
+    var city: String? = null
+    var fullAddress: String? = null
+    var postCode: String? = null
+    var country: String? = null
+    var state: String? = null
+
 }

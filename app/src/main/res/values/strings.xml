@@ -46,4 +46,15 @@
     <string name="what_happened">¿Que sucedio?</string>
     <string name="what_was_the_crime">¿Cual fue el crimen?</string>
     <string name="whenItHappened">¿Cuando sucedió?</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="map">Mapa</string>
+    <string name="last_reports_title">Ultimos reportes</string>
+    <string name="my_reports_title">Mis reportes</string>
+    <string name="title_activity_report_detailed">ReportDetailedActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>

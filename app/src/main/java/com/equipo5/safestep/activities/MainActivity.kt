@@ -13,17 +13,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.equipo5.safestep.fragments.CrimeFormFragment
 import com.equipo5.safestep.R
+import com.equipo5.safestep.fragments.CrimeFormFragment
 import com.equipo5.safestep.models.User
 import com.equipo5.safestep.network.AuthService
 import com.equipo5.safestep.network.Callback
 import com.equipo5.safestep.network.FirestoreService
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.api.geocoding.v5.GeocodingCriteria
+import com.mapbox.api.geocoding.v5.MapboxGeocoding
+import com.mapbox.api.geocoding.v5.models.CarmenFeature
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse
+import com.mapbox.core.exceptions.ServicesException
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
@@ -31,7 +39,12 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Response
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 
@@ -49,6 +62,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val firestoreService = FirestoreService()
     private val authService = AuthService()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +88,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        nav_view.setCheckedItem(R.id.nav_reports)
+        nav_view.setCheckedItem(R.id.nav_map)
         nav_view.setNavigationItemSelectedListener(this)
 
         getUserData()
@@ -85,7 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val id = authService.getUid()
 
         if (id != null) {
-            firestoreService.getUser(id, object: Callback<User> {
+            firestoreService.getUser(id, object : Callback<User> {
                 override fun onSuccess(result: User?) {
                     val navHeader = nav_view.getHeaderView(0)
                     if (result != null) {
@@ -107,6 +121,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         if(drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
+        } else if(container.childCount > 0) {
+            onSupportNavigateUp()
         } else {
             super.onBackPressed()
         }
@@ -114,28 +130,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
-
         when (item.itemId) {
-            R.id.nav_reports -> {
+            R.id.nav_map -> {
+                item.isChecked = true
+                supportFragmentManager.findFragmentById(R.id.container)?.let {
+                    supportFragmentManager.beginTransaction().remove(it).commit()
+                }
+            }
 
+            R.id.nav_reports -> {
+                item.isChecked = true
+                startActivity(Intent(this, ReportsActivity::class.java))
             }
             R.id.nav_logOut -> {
+                item.isChecked = true
                 authService.logOut()
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
         }
-        toolbar.title = item.title
 
         drawer_layout.closeDrawer(GravityCompat.START)
 
         return true
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        nav_view.setCheckedItem(R.id.nav_map)
+        supportFragmentManager.findFragmentById(R.id.container)?.let {
+            supportFragmentManager.beginTransaction().remove(it).commit()
+        }
+        return super.onSupportNavigateUp()
+    }
+
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
-        mapboxMap.setStyle(Style.TRAFFIC_DAY
-        ) { style -> enableLocationComponent(style); }
+        mapboxMap.setStyle(
+            Style.TRAFFIC_DAY
+        ) { style ->
+            etSearchBar.setOnClickListener { autocompletePlace() }
+            enableLocationComponent(style);
+        }
 
         mapboxMap.addOnMapLongClickListener { point ->
             openCrimeForm(point.latitude.toString(), point.longitude.toString())
@@ -144,18 +179,50 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+
+    private fun autocompletePlace() {
+
+        val autocompleteFragment: PlaceAutocompleteFragment = PlaceAutocompleteFragment.newInstance(
+            getString(
+                R.string.mapbox_access_token
+            )
+        )
+
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(carmenFeature: CarmenFeature) {
+                Toast.makeText(
+                    this@MainActivity,
+                    carmenFeature.text(), Toast.LENGTH_LONG
+                ).show()
+                supportFragmentManager.findFragmentById(R.id.container)?.let {
+                    supportFragmentManager.beginTransaction().remove(it).commit()
+                };
+            }
+
+            override fun onCancel() {
+                supportFragmentManager.findFragmentById(R.id.container)?.let {
+                    supportFragmentManager.beginTransaction().remove(it).commit()
+                };
+            }
+        })
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.container, autocompleteFragment)
+        transaction.commit()
+    }
+
     private fun openCrimeForm(latitude: String, longitude: String) {
         val fragment: Fragment = CrimeFormFragment()
 
         val bundle = Bundle()
 
-        bundle.putString("latitude", latitude)
-        bundle.putString("longitude", longitude)
+        bundle.putDouble("latitude", latitude.toDouble())
+        bundle.putDouble("longitude", longitude.toDouble())
 
         fragment.arguments = bundle
 
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment).addToBackStack("main")
+            .replace(R.id.container, fragment)
         transaction.commit()
     }
 
@@ -236,6 +303,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
+        nav_view.setCheckedItem(R.id.nav_map)
         mapView.onResume()
     }
 
