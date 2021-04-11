@@ -49,5 +49,6 @@
     <string name="map">Mapa</string>
     <string name="last_reports_title">Ultimos reportes</string>
     <string name="my_reports_title">Mis reportes</string>
+    <string name="iniciar_sesi_n">Iniciar sesión</string>
 
 </resources>

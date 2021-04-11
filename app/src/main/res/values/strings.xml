@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SafeStep</string>
     <string name="logo_description">Logo de SafeStep</string>
-    <string name="login_string">Iniciar sesión</string>
-    <string name="email_field">Correo electronico</string>
+    <string name="login_string">Inicio de sesión</string>
+    <string name="email_field">Correo electrónico</string>
     <string name="password_field">Contraseña</string>
-    <string name="reset_password">Olvide la contraseña</string>
+    <string name="reset_password">Olvidé la contraseña</string>
     <string name="sign_up_string">Registrarme</string>
     <string name="sign_up_title">Registrarse</string>
     <string name="full_name_field">Nombre completo</string>
@@ -12,7 +12,7 @@
     <string name="ask_have_account">¿Tienes una cuenta?</string>
     <string name="login_imperative">Inicia sesión</string>
     <string name="string_target">Terminos, Condiciones</string>
-    <string name="terms_conditions">Acepto los Terminos, Condiciones y el aviso de privacidad.</string>
+    <string name="terms_conditions">Acepto los Términos, Condiciones y el Aviso de Privacidad.</string>
     <string name="profile_image">Foto de perfil</string>
     <string name="navigation_drawer_open">Abrir menu</string>
     <string name="navigation_drawer_close">Cerrar menu</string>
@@ -36,7 +36,7 @@
     <string name="error_operation">Hubo un error en la operación</string>
     <string name="reports_title">Reportes</string>
     <string name="log_out_title">Cerrar sesión</string>
-    <string name="app_name_br">Safe\nStep</string>
+    <string name="app_name_br">Safe Step</string>
     <string name="reset_password_title">Restablecer Contraseña</string>
     <string name="send_email">Enviar Correo</string>
     <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoiaW5nZ3VlcnJlcm8iLCJhIjoiY2toM251bTV2MTBxNDJ5cngybHo5eHRseCJ9.ckhpgcLjhsjuPePLq4Y9vQ</string>
@@ -47,14 +47,15 @@
     <string name="what_was_the_crime">¿Cual fue el crimen?</string>
     <string name="whenItHappened">¿Cuando sucedió?</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="map">Mapa</string>
     <string name="last_reports_title">Ultimos reportes</string>
     <string name="my_reports_title">Mis reportes</string>
-    <string name="title_activity_report_detailed">ReportDetailedActivity</string>
+    <string name="title_activity_report_detailed" translatable="false">ReportDetailedActivity</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="hello_world">Hello Square World!</string>
+    <string name="hello_world" translatable="false">Hello Square World!</string>
+    <string name="iniciar_sesi_n">Iniciar sesión</string>
 </resources>

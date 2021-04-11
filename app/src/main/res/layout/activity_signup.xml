@@ -17,7 +17,8 @@
             android:text="@string/sign_up_title"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="20dp"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/colorPrimaryDark"/>
 
@@ -47,7 +48,6 @@
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.Primary"
-            android:layout_marginTop="16dp"
             android:hint="@string/email_field"
             app:errorEnabled="true"
             android:layout_gravity="center_horizontal">
@@ -69,7 +69,6 @@
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.Primary"
-            android:layout_marginTop="16dp"
             android:hint="@string/password_field"
             app:errorEnabled="true"
             android:layout_gravity="center_horizontal"
@@ -90,7 +89,6 @@
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.Primary"
-            android:layout_marginTop="16dp"
             android:hint="@string/verify_password"
             app:errorEnabled="true"
             android:layout_gravity="center_horizontal"
@@ -110,8 +108,12 @@
             android:id="@+id/cbTermsAndConditions"
             android:layout_width="330dp"
             android:layout_height="wrap_content"
+            android:text="@string/terms_conditions"
             android:layout_gravity="center_horizontal"
+            android:textColor="#808080"
+            android:textSize="12dp"
             android:focusableInTouchMode="true"/>
+
 
         <TextView
             android:id="@+id/tvTermsConditions"
@@ -120,7 +122,9 @@
             android:layout_gravity="center_horizontal"
             android:paddingStart="24dp"
             tools:ignore="RtlSymmetry"
-            android:text="@string/terms_conditions"/>
+            android:text="@string/terms_conditions"
+            android:visibility="invisible"
+            />
 
 
         <Space
@@ -132,6 +136,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitSignUp"
             android:layout_width="330dp"
+            android:textSize="18dp"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Button.BigButton.Primary"
             android:layout_gravity="center_horizontal"
@@ -141,7 +146,7 @@
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="56dp"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal">
 
