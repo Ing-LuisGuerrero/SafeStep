@@ -45,8 +45,6 @@
             app:errorEnabled="true"
             android:layout_gravity="center_horizontal">
 
-
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmailLogIn"
                 android:layout_width="330dp"
@@ -76,15 +74,10 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-
-
-
-
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitLogin"
             android:layout_width="330dp"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="5dp"
