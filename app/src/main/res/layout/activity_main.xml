@@ -31,37 +31,35 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="end|top"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <ImageView
+                android:id="@+id/busqueda"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_search"
+                android:background="@drawable/circle"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="8dp"
+                android:visibility="visible"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="50dp"
                 android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_baseline_menu_24" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilSearchBar"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.Primary"
-                app:boxBackgroundColor="@color/colorSecondary"
-                app:startIconDrawable="@drawable/ic_baseline_search_24"
-                app:startIconTint="@color/colorPrimary"
-                app:hintEnabled="false"
-                app:boxCornerRadiusBottomStart="30dp"
-                app:boxCornerRadiusBottomEnd="30dp"
-                app:boxCornerRadiusTopStart="30dp"
-                app:boxCornerRadiusTopEnd="30dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSearchBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:hint="@string/search_field"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
+                app:navigationIcon="@drawable/ic_baseline_menu_24"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                />
         </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -69,6 +67,9 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="#D5FFFFFF"
+        android:visibility="invisible"
+        />
 
 </androidx.drawerlayout.widget.DrawerLayout>
