@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapView: MapView
-    private lateinit var container: FrameLayout
+    //private lateinit var container: FrameLayout
     private lateinit var permissionsManager: PermissionsManager
     private lateinit var locationEngine: LocationEngine
     private val callback = LocationChangeListeningActivityLocationCallback(this)
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         mapView = findViewById(R.id.mapView)
-        container = findViewById(R.id.container)
+        //container = findViewById(R.id.container)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
@@ -176,8 +176,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Style.MAPBOX_STREETS
         ) { style ->
             busqueda.setOnClickListener { //etSearchBar.setOnClickListener
-                container.visibility = View.VISIBLE // VISIBILITY
-                busqueda.visibility = View.INVISIBLE
+                //container.visibility = View.VISIBLE // VISIBILITY
+                //busqueda.visibility = View.GONE
+                pantalla_verde.visibility = View.VISIBLE
                 autocompletePlace()
             }
 
@@ -208,8 +209,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 ).show()
                 supportFragmentManager.findFragmentById(R.id.container)?.let {
                     supportFragmentManager.beginTransaction().remove(it).commit()
-                    container.visibility = View.INVISIBLE // VISIBILITY
-                    busqueda.visibility = View.VISIBLE
+                    pantalla_verde.visibility = View.INVISIBLE
+                    //container.visibility = View.GONE // VISIBILITY
+                    //busqueda.visibility = View.VISIBLE
                 };
             }
 
@@ -218,8 +220,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onCancel() {
                 supportFragmentManager.findFragmentById(R.id.container)?.let {
                     supportFragmentManager.beginTransaction().remove(it).commit()
-                    container.visibility = View.INVISIBLE // VISIBILITY
-                    busqueda.visibility = View.VISIBLE
+                    pantalla_verde.visibility = View.INVISIBLE
+                    //container.visibility = View.GONE // VISIBILITY
+                    //busqueda.visibility = View.VISIBLE
                 };
             }
         })
