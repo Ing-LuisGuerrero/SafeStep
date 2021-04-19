@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val position = CameraPosition.Builder()
                     .target(LatLng((carmenFeature.geometry() as Point).latitude(),
                     (carmenFeature.geometry() as Point).longitude()))
-                    .zoom(10.0)
+                    .zoom(15.0)
                     .tilt(20.0)
                     .build()
 
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     carmenFeature.text(), Toast.LENGTH_LONG
                 ).show()
 
-                busqueda.hideKeyboard() // esconder teclado
+                busqueda.hideKeyboard()
 
                 supportFragmentManager.findFragmentById(R.id.container)?.let {
                     supportFragmentManager.beginTransaction().remove(it).commit()
