@@ -40,24 +40,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    >
 
                     <ImageView
                         android:id="@+id/ivMainImage"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:src="@drawable/ic_baseline_image_24" />
 
                     <ImageView
                         android:id="@+id/ivSecondImage"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:src="@drawable/ic_baseline_image_24" />
 
                     <ImageView
                         android:id="@+id/ivThirdImage"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:src="@drawable/ic_baseline_image_24" />
 
                 </LinearLayout>

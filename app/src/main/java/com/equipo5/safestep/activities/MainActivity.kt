@@ -1,11 +1,13 @@
 package com.equipo5.safestep.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -33,6 +35,8 @@ import com.mapbox.api.geocoding.v5.models.GeocodingResponse
 import com.mapbox.core.exceptions.ServicesException
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.modes.CameraMode
@@ -43,6 +47,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener
+import com.mapbox.mapboxsdk.plugins.places.common.utils.KeyboardUtils.hideKeyboard
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Response
@@ -203,10 +208,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(carmenFeature: CarmenFeature) {
+                val position = CameraPosition.Builder()
+                    .target(LatLng((carmenFeature.geometry() as Point).latitude(),
+                    (carmenFeature.geometry() as Point).longitude()))
+                    .zoom(10.0)
+                    .tilt(20.0)
+                    .build()
+
+                mapboxMap.animateCamera(
+                    CameraUpdateFactory
+                    .newCameraPosition(position), 7000)
+
                 Toast.makeText(
                     this@MainActivity,
                     carmenFeature.text(), Toast.LENGTH_LONG
                 ).show()
+
+                busqueda.hideKeyboard() // esconder teclado
+
                 supportFragmentManager.findFragmentById(R.id.container)?.let {
                     supportFragmentManager.beginTransaction().remove(it).commit()
                     pantalla_verde.visibility = View.INVISIBLE
@@ -353,6 +372,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    fun View.hideKeyboard() {
+        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 
 
