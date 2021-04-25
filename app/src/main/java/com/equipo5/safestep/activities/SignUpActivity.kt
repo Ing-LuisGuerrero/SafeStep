@@ -77,6 +77,7 @@ class SignUpActivity : AppCompatActivity(), ValidateEmail {
 
         userData.name = fullName
         userData.email = email
+        userData.profilePicturePath = ""
 
         val user = Pair(id, userData)
         Log.d("name", user.second.name)

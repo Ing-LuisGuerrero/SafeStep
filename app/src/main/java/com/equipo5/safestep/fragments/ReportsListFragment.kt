@@ -1,11 +1,14 @@
 package com.equipo5.safestep.fragments
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.equipo5.safestep.R
@@ -14,6 +17,9 @@ import com.equipo5.safestep.adapters.ReportsAdapter
 import com.equipo5.safestep.adapters.ReportsListener
 import com.equipo5.safestep.models.Report
 import com.equipo5.safestep.viewmodels.ReportsViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
 import kotlinx.android.synthetic.main.fragment_reports_list.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,6 +43,9 @@ class ReportsListFragment : Fragment(), ReportsListener {
         arguments?.let {
             operation = it.getString(ARG_PARAM1)
         }
+
+
+
     }
 
     override fun onCreateView(
@@ -111,8 +120,26 @@ class ReportsListFragment : Fragment(), ReportsListener {
     }
 
     override fun onReportClicked(report: Report, position: Int) {
+        /*
         val intent = Intent(context, ReportDetailedActivity::class.java)
         intent.putExtra("report", report);
         startActivity(intent);
+        */
+        val db = Firebase.firestore
+
+
+        val docRef = db.collection("Reports").document()
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d("exist", "DocumentSnapshot data: ${document.data}")
+                } else {
+                    Log.d("does not", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("error", "get failed with ", exception)
+            }
+        Toast.makeText(this.context, "Hola", Toast.LENGTH_SHORT).show()
     }
 }

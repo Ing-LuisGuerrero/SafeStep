@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 30
@@ -47,8 +48,17 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:20.0.0'
     implementation 'com.google.firebase:firebase-firestore:22.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
 
     implementation 'com.google.firebase:firebase-storage:19.2.0'
+
+    //firebase ui storage agregado
+    implementation 'com.firebaseui:firebase-ui-storage:3.2.2'
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    kapt 'com.github.bumptech.glide:compiler:4.6.1'
+
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
 

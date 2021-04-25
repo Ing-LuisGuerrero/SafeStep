@@ -6,4 +6,6 @@ class User():Serializable {
 
     lateinit var name: String
     lateinit var email: String
+    //String?
+    lateinit var profilePicturePath: String
 }

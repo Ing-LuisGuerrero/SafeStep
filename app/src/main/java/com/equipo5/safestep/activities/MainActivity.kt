@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -48,7 +49,10 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener
 import com.mapbox.mapboxsdk.plugins.places.common.utils.KeyboardUtils.hideKeyboard
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.header.*
+import kotlinx.android.synthetic.main.header.view.*
 import retrofit2.Call
 import retrofit2.Response
 import timber.log.Timber
@@ -73,6 +77,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -86,6 +92,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //container = findViewById(R.id.container)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
+
+        var navigationView = findViewById<NavigationView>(R.id.nav_view)
+        var headerview = navigationView.getHeaderView(0)
+        var profile_pic = headerview.findViewById(R.id.profile_pic) as CircleImageView
 
         setSupportActionBar(toolbar)
 
@@ -104,6 +114,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
 
         getUserData()
+
+        headerview.profile_pic.setOnClickListener {
+            Toast.makeText(this, "AAAAA", Toast.LENGTH_SHORT).show()
+            // open gallery
+            val openGalleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(openGalleryIntent, 1000)
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1000)
+        {
+            if (resultCode == Activity.RESULT_OK)
+            {
+                // val filePath: Uri = data?.getData() ?: return
+                val imageUri = data?.getData()
+                profile_pic.setImageURI(imageUri)
+            }
+        }
+
     }
 
     private fun getUserData() {

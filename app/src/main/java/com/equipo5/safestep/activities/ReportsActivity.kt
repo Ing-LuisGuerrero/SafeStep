@@ -2,6 +2,7 @@ package com.equipo5.safestep.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.equipo5.safestep.R
 import com.equipo5.safestep.fragments.ReportsListFragment
