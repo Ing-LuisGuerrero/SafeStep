@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:22.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation "com.google.firebase:firebase-storage-ktx:19.2.1"
 
     implementation 'com.google.firebase:firebase-storage:19.2.0'
 

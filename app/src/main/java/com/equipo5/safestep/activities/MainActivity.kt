@@ -3,6 +3,7 @@ package com.equipo5.safestep.activities
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -24,8 +25,14 @@ import com.equipo5.safestep.models.User
 import com.equipo5.safestep.network.AuthService
 import com.equipo5.safestep.network.Callback
 import com.equipo5.safestep.network.FirestoreService
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -49,6 +56,7 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener
 import com.mapbox.mapboxsdk.plugins.places.common.utils.KeyboardUtils.hideKeyboard
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.header.*
@@ -57,6 +65,7 @@ import retrofit2.Call
 import retrofit2.Response
 import timber.log.Timber
 import java.lang.ref.WeakReference
+import java.lang.reflect.Array.get
 
 
 const val DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L
@@ -70,10 +79,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //private lateinit var container: FrameLayout
     private lateinit var permissionsManager: PermissionsManager
     private lateinit var locationEngine: LocationEngine
+    private lateinit var storageReference: StorageReference
     private val callback = LocationChangeListeningActivityLocationCallback(this)
 
     private val firestoreService = FirestoreService()
     private val authService = AuthService()
+
 
 
 
@@ -97,6 +108,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var headerview = navigationView.getHeaderView(0)
         var profile_pic = headerview.findViewById(R.id.profile_pic) as CircleImageView
 
+        storageReference = FirebaseStorage.getInstance().getReference()
+
+
+        val profileRef = storageReference.child("users/"+ authService.getCurrentUser()?.uid +"profile.jpg")
+        profileRef.downloadUrl.addOnSuccessListener {
+            Picasso.with(this@MainActivity).load(it.toString()).into(profile_pic)
+        }
+
+
         setSupportActionBar(toolbar)
 
         nav_view.bringToFront()
@@ -116,13 +136,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         getUserData()
 
         headerview.profile_pic.setOnClickListener {
-            Toast.makeText(this, "AAAAA", Toast.LENGTH_SHORT).show()
             // open gallery
             val openGalleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(openGalleryIntent, 1000)
+
         }
 
     }
+
+    var imageUri: Uri? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -132,10 +154,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             {
                 // val filePath: Uri = data?.getData() ?: return
                 val imageUri = data?.getData()
-                profile_pic.setImageURI(imageUri)
+                //profile_pic.setImageURI(imageUri) comentado para probar firebase
+
+                uploadImageToFirebase(imageUri)
             }
         }
 
+    }
+
+    private fun uploadImageToFirebase(imageUri: Uri?) { //? indica que puede ser null
+        //upload image to firebase storage
+        val fileRef = storageReference.child("users/"+ authService.getCurrentUser()?.uid +"profile.jpg")
+        if (imageUri != null) {
+            fileRef.putFile(imageUri).addOnSuccessListener {
+                //Toast.makeText(this, " Path: ${it.metadata?.path}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Foto de perfil actualizada.", Toast.LENGTH_LONG).show()
+                fileRef.downloadUrl.addOnSuccessListener {
+                    Picasso.with(this).load(imageUri).into(profile_pic) // sospechoso
+                }
+
+            }.addOnFailureListener {
+                Toast.makeText(this, "Error al subir la imagen", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun getUserData() {

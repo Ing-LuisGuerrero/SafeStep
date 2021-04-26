@@ -140,6 +140,6 @@ class ReportsListFragment : Fragment(), ReportsListener {
             .addOnFailureListener { exception ->
                 Log.d("error", "get failed with ", exception)
             }
-        Toast.makeText(this.context, "Hola", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this.context, "Hola", Toast.LENGTH_SHORT).show()
     }
 }
