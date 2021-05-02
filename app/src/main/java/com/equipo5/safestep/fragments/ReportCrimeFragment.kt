@@ -446,19 +446,37 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                                 )
 
                                 val docRef = db.collection("Cities").document(crimeRegister.city.toString())
+                                var ciudad = crimeRegister.city.toString()
 
                                 docRef.get()
                                     .addOnSuccessListener{
-                                        if (it.exists()) {
-                                            docRef.update("Delitos", FieldValue.increment(1))
-                                                .addOnSuccessListener {Log.d("Ciudad", "Incremento exitoso")}
-                                                .addOnFailureListener {Log.e("Ciudad", "Incremento fallido")}
+                                        if(ciudad == "Monterrey" ||
+                                            ciudad == "Ciudad General Escobedo" ||
+                                            ciudad == "García" ||
+                                            ciudad == "Guadalupe" ||
+                                            ciudad == "San Nicolás De Los Garza" ||
+                                            ciudad == "Cadereyta Jiménez" ||
+                                            ciudad == "Carmen" ||
+                                            ciudad == "Ciudad Apodaca" ||
+                                            ciudad == "Ciudad Benito Juárez" ||
+                                            ciudad == "Ciudad Santa Catarina" ||
+                                            ciudad == "Salinas Victoria" ||
+                                            ciudad == "San Pedro Garza García" ||
+                                            ciudad == "Santiago"){
+                                            if (it.exists()) {
+                                                docRef.update("Delitos", FieldValue.increment(1))
+                                                    .addOnSuccessListener {Log.d("Ciudad", "Incremento exitoso")}
+                                                    .addOnFailureListener {Log.e("Ciudad", "Incremento fallido")}
 
-                                        } else {
-                                            docRef.set(data)
-                                                .addOnSuccessListener {Log.d("Ciudad", "Registro exitoso")}
-                                                .addOnFailureListener {Log.e("Ciudad", "Registro fallido")}
+                                            } else {
+                                                docRef.set(data)
+                                                    .addOnSuccessListener {Log.d("Ciudad", "Registro exitoso")}
+                                                    .addOnFailureListener {Log.e("Ciudad", "Registro fallido")}
+                                            }
+                                        }else{
+                                            Log.d("Fuera", "del área metropolitana: " + crimeRegister.city.toString())
                                         }
+
                                     }
                                 //Contador
 
@@ -472,28 +490,51 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                                 crimeRegister.country = feature.context()!![3].text()
                                 crimeRegister.state = feature.context()!![2].text()
 
-                                firestoreService.insertCrimeRegister(
-                                    crimeRegister,
-                                    object : Callback<Task<Void>> {
-                                        override fun onSuccess(result: Task<Void>?) {
-                                            rlLoadingCrimeRegister.visibility =
-                                                View.INVISIBLE
-                                            Toast.makeText(
-                                                context,
-                                                "Registrado",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                            fragmentManager?.beginTransaction()
-                                                ?.remove(this@CrimeFormFragment)
-                                                ?.commit()
-                                        }
 
-                                        override fun onFailure(exception: Exception) {
-                                            rlLoadingCrimeRegister.visibility =
-                                                View.INVISIBLE
-                                        }
 
-                                    })
+                                if(ciudad == "Monterrey" ||
+                                    ciudad == "Ciudad General Escobedo" ||
+                                    ciudad == "García" ||
+                                    ciudad == "Guadalupe" ||
+                                    ciudad == "San Nicolás De Los Garza" ||
+                                    ciudad == "Cadereyta Jiménez" ||
+                                    ciudad == "Carmen" ||
+                                    ciudad == "Ciudad Apodaca" ||
+                                    ciudad == "Ciudad Benito Juárez" ||
+                                    ciudad == "Ciudad Santa Catarina" ||
+                                    ciudad == "Salinas Victoria" ||
+                                    ciudad == "San Pedro Garza García" ||
+                                    ciudad == "Santiago"){
+                                    firestoreService.insertCrimeRegister(
+                                        crimeRegister,
+                                        object : Callback<Task<Void>> {
+                                            override fun onSuccess(result: Task<Void>?) {
+                                                rlLoadingCrimeRegister.visibility =
+                                                    View.INVISIBLE
+                                                Toast.makeText(
+                                                    context,
+                                                    "Registrado",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                                fragmentManager?.beginTransaction()
+                                                    ?.remove(this@CrimeFormFragment)
+                                                    ?.commit()
+                                            }
+
+                                            override fun onFailure(exception: Exception) {
+                                                rlLoadingCrimeRegister.visibility =
+                                                    View.INVISIBLE
+                                            }
+
+                                        })
+                                }else{
+                                    Toast.makeText(
+                                        context,
+                                        "Por el momento no existe soporte en esta área. " + ciudad + " fuera del Área Metropolitana de Monterrey",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
 
                             } else {
                                 Toast.makeText(
