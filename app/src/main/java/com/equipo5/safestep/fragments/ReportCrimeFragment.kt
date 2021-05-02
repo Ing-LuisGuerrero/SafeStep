@@ -7,6 +7,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -24,6 +25,8 @@ import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.equipo5.safestep.R
+import com.equipo5.safestep.activities.MainActivity
+import com.equipo5.safestep.activities.ReportDetailedActivity
 import com.equipo5.safestep.models.Report
 import com.equipo5.safestep.network.AuthService
 import com.equipo5.safestep.network.Callback
@@ -33,6 +36,9 @@ import com.equipo5.safestep.utils.FileUtil
 import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.mapbox.api.geocoding.v5.GeocodingCriteria
 import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
@@ -429,6 +435,32 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                                 //geocodeResultTextView.setText(feature.toString())
                                 //animateCameraToNewPosition(latLng)
                                 crimeRegister.city = feature.context()!![1].text()
+                                //Toast.makeText(MainActivity(), crimeRegister.city, Toast.LENGTH_LONG).show()
+                                Log.d("Ciudad", "Hola " + crimeRegister.city.toString())
+
+                                //Contador
+                                val db = Firebase.firestore
+                                var band = 1
+                                val data = hashMapOf(
+                                    "Delitos" to 1
+                                )
+
+                                val docRef = db.collection("Cities").document(crimeRegister.city.toString())
+
+                                docRef.get()
+                                    .addOnSuccessListener{
+                                        if (it.exists()) {
+                                            docRef.update("Delitos", FieldValue.increment(1))
+                                                .addOnSuccessListener {Log.d("Ciudad", "Incremento exitoso")}
+                                                .addOnFailureListener {Log.e("Ciudad", "Incremento fallido")}
+
+                                        } else {
+                                            docRef.set(data)
+                                                .addOnSuccessListener {Log.d("Ciudad", "Registro exitoso")}
+                                                .addOnFailureListener {Log.e("Ciudad", "Registro fallido")}
+                                        }
+                                    }
+                                //Contador
 
                                 if(feature.address() != null) {
                                     crimeRegister.fullAddress = feature.text() + " " + feature.address().toString()
