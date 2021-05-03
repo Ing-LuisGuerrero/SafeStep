@@ -19,11 +19,11 @@
         android:roundIcon="@mipmap/ic_safe_step_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.ReportsPerCity"></activity>
         <activity
             android:name=".activities.ReportDetailedActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.ReportsActivity" />
 
         <provider
@@ -52,8 +52,7 @@
         <activity
             android:name=".activities.SplashActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -10,6 +10,12 @@
         <item
             android:id="@+id/nav_reports"
             android:title="@string/reports_title"
+            android:icon="@drawable/ic_baseline_library_books_24"/>
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_ciudades"
+            android:title="Reportes por ciudad"
             android:icon="@drawable/ic_baseline_insert_chart_24"/>
     </group>
     <group android:checkableBehavior="single">

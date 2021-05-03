@@ -227,6 +227,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.isChecked = true
                 startActivity(Intent(this, ReportsActivity::class.java))
             }
+            R.id.nav_ciudades -> {
+                item.isChecked = true
+                startActivity(Intent(this, ReportsPerCity::class.java))
+            }
             R.id.nav_logOut -> {
                 item.isChecked = true
                 authService.logOut()
