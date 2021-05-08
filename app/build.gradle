@@ -69,7 +69,7 @@ dependencies {
 
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.5.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v9:0.12.0'
-
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     implementation 'com.github.smarteist:autoimageslider:1.4.0'

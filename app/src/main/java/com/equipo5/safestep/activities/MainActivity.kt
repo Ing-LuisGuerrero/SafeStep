@@ -3,6 +3,8 @@ package com.equipo5.safestep.activities
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -16,6 +18,7 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.withStyledAttributes
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -28,6 +31,7 @@ import com.equipo5.safestep.network.FirestoreService
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
@@ -53,9 +57,13 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener
 import com.mapbox.mapboxsdk.plugins.places.common.utils.KeyboardUtils.hideKeyboard
+import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -107,6 +115,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var navigationView = findViewById<NavigationView>(R.id.nav_view)
         var headerview = navigationView.getHeaderView(0)
         var profile_pic = headerview.findViewById(R.id.profile_pic) as CircleImageView
+
 
         storageReference = FirebaseStorage.getInstance().getReference()
 
@@ -252,6 +261,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onSupportNavigateUp()
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(
@@ -263,6 +273,57 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 pantalla_verde.visibility = View.VISIBLE
                 autocompletePlace()
             }
+
+            //-------------------------- Add annotation---------------------------------------------
+            // lat 25.678334605428844
+            // long -100.28254307786257
+
+            BitmapUtils.getBitmapFromDrawable(resources.getDrawable(R.drawable.light_one))
+                ?.let { style.addImage("id_icon_1", it) }
+            BitmapUtils.getBitmapFromDrawable(resources.getDrawable(R.drawable.light_two))
+                ?.let { style.addImage("id_icon_2", it) }
+            BitmapUtils.getBitmapFromDrawable(resources.getDrawable(R.drawable.light_three))
+                ?.let { style.addImage("id_icon_3", it) }
+
+            val symbolManager = SymbolManager(mapView, mapboxMap, style)
+            symbolManager.iconAllowOverlap = true
+            symbolManager.textAllowOverlap = true
+
+            val symbolOptions = SymbolOptions()
+                .withLatLng(LatLng(25.678334605428844, -100.28254307786257))
+                .withIconImage("id_icon_1")
+                .withIconSize(0.15f)
+
+            val symbol = symbolManager.create(symbolOptions)
+
+            val symbolOptions2 = SymbolOptions()
+                .withLatLng(LatLng(26.678334605428844, -101.28254307786257))
+                .withIconImage("id_icon_1")
+                .withIconSize(0.15f)
+
+            val symbol2 = symbolManager.create(symbolOptions2)
+
+            //--------------------------For loop mapping lights-------------------------------------
+            val db = Firebase.firestore
+
+
+            db.collection("Reports")
+                .get()
+                .addOnSuccessListener { documents ->
+                    for(document in documents){
+                        var latValue = document.get("latitude").toString()
+                        var longValue = document.get("longitude").toString()
+
+                        var symbolOptionsR = SymbolOptions()
+                            .withLatLng(LatLng(latValue.toDouble(), longValue.toDouble()))
+                            .withIconImage("id_icon_3")
+                            .withIconSize(0.15f)
+
+                        var symbolR = symbolManager.create(symbolOptionsR)
+
+                    }
+                }
+
 
             enableLocationComponent(style);
         }
