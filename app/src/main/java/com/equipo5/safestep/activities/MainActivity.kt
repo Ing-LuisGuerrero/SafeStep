@@ -289,40 +289,60 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             symbolManager.iconAllowOverlap = true
             symbolManager.textAllowOverlap = true
 
-            val symbolOptions = SymbolOptions()
-                .withLatLng(LatLng(25.678334605428844, -100.28254307786257))
-                .withIconImage("id_icon_1")
-                .withIconSize(0.15f)
-
-            val symbol = symbolManager.create(symbolOptions)
-
-            val symbolOptions2 = SymbolOptions()
-                .withLatLng(LatLng(26.678334605428844, -101.28254307786257))
-                .withIconImage("id_icon_1")
-                .withIconSize(0.15f)
-
-            val symbol2 = symbolManager.create(symbolOptions2)
-
             //--------------------------For loop mapping lights-------------------------------------
             val db = Firebase.firestore
 
+            try{
+                db.collection("Reports")
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for(document in documents){
+                            var latValue = document.get("latitude").toString()
+                            var longValue = document.get("longitude").toString()
+                            //----------------Extraer número de reportes---------------------
 
-            db.collection("Reports")
-                .get()
-                .addOnSuccessListener { documents ->
-                    for(document in documents){
-                        var latValue = document.get("latitude").toString()
-                        var longValue = document.get("longitude").toString()
+                            var cityValue = document.get("city").toString()
+                            db.collection("Cities").document(cityValue)
+                                .get()
+                                .addOnSuccessListener {
+                                    var delitosR = it.get("Delitos").toString()
+                                    Log.d("Marcador", cityValue + ": D:  "+ delitosR)
+                                    if(delitosR.toInt() < 3){
+                                        var symbolOptionsR = SymbolOptions()
+                                            .withLatLng(LatLng(latValue.toDouble(), longValue.toDouble()))
+                                            .withIconImage("id_icon_1")
+                                            .withIconSize(0.15f)
 
-                        var symbolOptionsR = SymbolOptions()
-                            .withLatLng(LatLng(latValue.toDouble(), longValue.toDouble()))
-                            .withIconImage("id_icon_3")
-                            .withIconSize(0.15f)
+                                        var symbolR = symbolManager.create(symbolOptionsR)
 
-                        var symbolR = symbolManager.create(symbolOptionsR)
+                                    }else if(delitosR.toInt() in 3..5){
+                                        var symbolOptionsR = SymbolOptions()
+                                            .withLatLng(LatLng(latValue.toDouble(), longValue.toDouble()))
+                                            .withIconImage("id_icon_2")
+                                            .withIconSize(0.15f)
 
+                                        var symbolR = symbolManager.create(symbolOptionsR)
+
+                                    }else{
+                                        var symbolOptionsR = SymbolOptions()
+                                            .withLatLng(LatLng(latValue.toDouble(), longValue.toDouble()))
+                                            .withIconImage("id_icon_3")
+                                            .withIconSize(0.15f)
+
+                                        var symbolR = symbolManager.create(symbolOptionsR)
+                                    }
+                                }
+
+                            //----------------------------------------
+
+
+
+                        }
                     }
-                }
+            }catch (ex: Exception){
+                Log.e("Reporte", ex.message.toString())
+            }
+
 
 
             enableLocationComponent(style);
