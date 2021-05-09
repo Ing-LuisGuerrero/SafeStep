@@ -18,6 +18,24 @@
             android:title="Reportes por ciudad"
             android:icon="@drawable/ic_baseline_insert_chart_24"/>
     </group>
+    <group android:enabled="false">
+        <item android:title=""/>
+    </group>
+    <group android:enabled="false">
+        <item android:title=""/>
+    </group>
+    <group android:enabled="false">
+        <item android:title=""/>
+    </group>
+    <group android:enabled="false">
+        <item android:title=""/>
+    </group>
+    <group android:enabled="false">
+        <item android:title=""/>
+    </group>
+    <group android:enabled="false">
+        <item android:title=""/>
+    </group>
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_logOut"

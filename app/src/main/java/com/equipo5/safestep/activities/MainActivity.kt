@@ -2,6 +2,8 @@ package com.equipo5.safestep.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -242,9 +244,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_logOut -> {
                 item.isChecked = true
-                authService.logOut()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Confirmación")
+                builder.setMessage("¿Seguro que quieres cerrar sesión?")
+                builder.setPositiveButton("Sí") { dialogInterface: DialogInterface, i: Int ->
+                    authService.logOut()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                }
+                builder.setNegativeButton("No",{ dialogInterface: DialogInterface, i: Int -> })
+                builder.show()
+
+
+
             }
         }
 

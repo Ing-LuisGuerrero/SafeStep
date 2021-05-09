@@ -360,6 +360,9 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                                     if (i <= nImages) {
                                         saveInDB(nImages, i + 1)
                                     }
+
+
+
                                 }
                                 .addOnFailureListener {
                                     rlLoadingCrimeRegister.visibility = View.INVISIBLE
@@ -367,6 +370,8 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                                         ?.remove(this@CrimeFormFragment)
                                         ?.commit()
                                 }
+
+
                         }
 
                         override fun onFailure(exception: Exception) {
@@ -517,8 +522,12 @@ class CrimeFormFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                                                     Toast.LENGTH_LONG
                                                 ).show()
                                                 fragmentManager?.beginTransaction()
-                                                    ?.remove(this@CrimeFormFragment)
+                                                    //---------.remove fragment commented and Intent added to refresh
+                                                    //----------map and make new reports annotation appear
+                                                    //?.remove(this@CrimeFormFragment)
                                                     ?.commit()
+                                                val intent = Intent(context, MainActivity::class.java)
+                                                startActivity(intent)
                                             }
 
                                             override fun onFailure(exception: Exception) {

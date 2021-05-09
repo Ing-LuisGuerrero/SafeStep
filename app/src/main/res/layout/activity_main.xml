@@ -34,18 +34,7 @@
             android:gravity="end|top"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <ImageView
-                android:id="@+id/busqueda"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/ic_search"
-                android:background="@drawable/circle"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:padding="8dp"
-                android:visibility="visible"
-                />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -61,6 +50,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/ic_loc"
                 android:background="@drawable/circle2"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="8dp"
+                android:visibility="invisible"
+                />
+            <ImageView
+                android:id="@+id/busqueda"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_search"
+                android:background="@drawable/circle"
                 android:layout_marginBottom="20dp"
                 android:layout_marginEnd="20dp"
                 android:padding="8dp"
